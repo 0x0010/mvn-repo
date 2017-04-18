@@ -38,7 +38,6 @@
     <airlift.version>0.139</airlift.version>
     <airlift.units.version>1.0</airlift.units.version>
     <cmdb-client.version>0.0.1-SNAPSHOT</cmdb-client.version>
-    <github.global.server>github</github.global.server>
   </properties>
 
   <dependencyManagement>
@@ -184,25 +183,18 @@
 
 
   <distributionManagement>
-    <!--<repository>-->
-      <!--<uniqueVersion>false</uniqueVersion>-->
-      <!--<id>raptor-nexus</id>-->
-      <!--<name>public-distribution</name>-->
-      <!--<url>http://192.168.199.23:8081/repository/maven-releases/</url>-->
-    <!--</repository>-->
-
     <repository>
-      <id>internal.repo</id>
-      <name>Temporary Staging Repository</name>
-      <url>file://${project.build.directory}/mvn-repo</url>
+      <uniqueVersion>false</uniqueVersion>
+      <id>raptor-nexus</id>
+      <name>public-distribution</name>
+      <url>http://192.168.199.23:8081/repository/maven-releases/</url>
     </repository>
-
-    <!--<snapshotRepository>-->
-      <!--<uniqueVersion>true</uniqueVersion>-->
-      <!--<id>raptor-nexus</id>-->
-      <!--<name>snapshot-distribution</name>-->
-      <!--<url>http://192.168.199.23:8081/repository/maven-snapshots/</url>-->
-    <!--</snapshotRepository>-->
+    <snapshotRepository>
+      <uniqueVersion>true</uniqueVersion>
+      <id>raptor-nexus</id>
+      <name>snapshot-distribution</name>
+      <url>http://192.168.199.23:8081/repository/maven-snapshots/</url>
+    </snapshotRepository>
   </distributionManagement>
 
   <dependencies>
@@ -240,7 +232,6 @@
         <executions>
           <execution>
             <id>attach-sources</id>
-            <!--<phase>verify</phase>-->
             <goals>
               <goal>jar-no-fork</goal>
             </goals>
@@ -282,10 +273,6 @@
       <plugin>
         <artifactId>maven-deploy-plugin</artifactId>
         <version>2.7</version>
-        <configuration>
-          <altDeploymentRepository>internal.repo::default::file://${user.dir}/ddal-mvn-repo</altDeploymentRepository>
-          <!--<altDeploymentRepository>file://${project.build.directory}/mvn-repo</altDeploymentRepository>-->
-        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-site-plugin</artifactId>
@@ -310,34 +297,8 @@
           <failOnNoGitDirectory>false</failOnNoGitDirectory>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>com.github.github</groupId>
-        <artifactId>site-maven-plugin</artifactId>
-        <version>0.12</version>
-        <configuration>
-          <message>Maven artifacts for ${project.version}</message>  <!-- git commit message -->
-          <noJekyll>true</noJekyll>                                  <!-- disable webpage processing -->
-          <outputDirectory>${user.dir}/ddal-mvn-repo</outputDirectory> <!-- matches distribution management repository url above -->
-          <branch>refs/heads/master</branch>                       <!-- remote branch name -->
-          <includes><include>**/*</include></includes>
-          <repositoryName>mvn-repo</repositoryName>      <!-- github repo name -->
-          <repositoryOwner>0x0010</repositoryOwner>    <!-- github username  -->
-        </configuration>
-        <executions>
-          <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
-          <execution>
-            <goals>
-              <goal>site</goal>
-            </goals>
-            <phase>deploy</phase>
-          </execution>
-        </executions>
-      </plugin>
-
     </plugins>
   </build>
-
   <profiles>
     <profile>
       <id>disable-java8-doclint</id>
@@ -347,6 +308,63 @@
       <properties>
         <additionalparam>-Xdoclint:none</additionalparam>
       </properties>
+    </profile>
+
+    <profile>
+      <id>upload-github-mvn-repo</id>
+      <activation>
+        <property>
+          <name>deployTo</name>
+          <value>github</value>
+        </property>
+      </activation>
+
+      <properties>
+        <github.global.server>github</github.global.server>
+      </properties>
+
+      <distributionManagement>
+        <repository>
+          <id>internal.repo</id>
+          <name>Temporary Staging Repository</name>
+          <url>file://${user.dir}/ddal-github-mvn-repo</url>
+        </repository>
+      </distributionManagement>
+
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>2.7</version>
+            <configuration>
+              <altDeploymentRepository>internal.repo::default::file://${user.dir}/ddal-github-mvn-repo</altDeploymentRepository>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>com.github.github</groupId>
+            <artifactId>site-maven-plugin</artifactId>
+            <version>0.12</version>
+            <configuration>
+              <message>Maven artifacts for ${project.version}</message>  <!-- git commit message -->
+              <noJekyll>true</noJekyll>                                  <!-- disable webpage processing -->
+              <outputDirectory>${user.dir}/ddal-github-mvn-repo</outputDirectory> <!-- matches distribution management repository url above -->
+              <branch>refs/heads/master</branch>                       <!-- remote branch name -->
+              <includes><include>**/*</include></includes>
+              <repositoryName>mvn-repo</repositoryName>      <!-- github repo name -->
+              <repositoryOwner>0x0010</repositoryOwner>    <!-- github username  -->
+            </configuration>
+            <executions>
+              <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->
+              <execution>
+                <goals>
+                  <goal>site</goal>
+                </goals>
+                <phase>deploy</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 
