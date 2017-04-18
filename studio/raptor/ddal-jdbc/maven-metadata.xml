@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <groupId>studio.raptor</groupId>
-  <artifactId>ddal-core</artifactId>
+  <artifactId>ddal-jdbc</artifactId>
   <versioning>
     <release>3.0.1</release>
     <versions>
       <version>3.0.1</version>
     </versions>
-    <lastUpdated>20170418045653</lastUpdated>
+    <lastUpdated>20170418045847</lastUpdated>
   </versioning>
 </metadata>
