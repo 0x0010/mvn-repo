@@ -8,27 +8,18 @@
         <version>3.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>ddal-common</artifactId>
+    <artifactId>ddal-config</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
+            <groupId>studio.raptor</groupId>
+            <artifactId>ddal-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
+            <groupId>studio.raptor</groupId>
+            <artifactId>cmdb-client</artifactId>
+            <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-        </dependency>
-
     </dependencies>
 
 </project>
